@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - Anime Shop{% endblock %}
+
+{% block content %}
+    <!-- Герой секция -->
+    <section class="hero">
+        <h1>Добро пожаловать в Anime Shop!</h1>
+        <p>Лучшие товары для настоящих отаку</p>
+        <a href="/products/" class="hero-btn">Смотреть все товары</a>
+    </section>
+
+    <!-- Категории -->
+    <h2>Категории товаров</h2>
+    <div class="categories">
+        {% for category in categories %}
+            <a href="/categories/{{ category.id }}/" class="category-card">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description|default:"Товары категории" }}</p>
+            </a>
+        {% empty %}
+            <p>Категории пока не добавлены</p>
+        {% endfor %}
+    </div>
+
+    <!-- Популярные товары -->
+    <h2>Популярные товары</h2>
+    <div class="products-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.category.name == "Фигурки" %}🗿
+                    {% elif product.category.name == "Одежда" %}👕
+                    {% elif product.category.name == "Аксессуары" %}🎀
+                    {% elif product.category.name == "Комиксы" %}📚
+                    {% else %}🎁
+                    {% endif %}
+                </div>
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-price">{{ product.price }} ₽</div>
+                <div>В наличии: {{ product.stock }} шт.</div>
+                <div>Категория: {{ product.category.name }}</div>
+                <a href="/products/{{ product.id }}/" class="btn">Подробнее</a>
+            </div>
+        {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <h3>Товаров пока нет</h3>
+                <p>Добавьте товары через админ-панель</p>
+                <a href="/admin/" class="btn">Перейти в админку</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Статистика -->
+    <div style="background: white; padding: 30px; border-radius: 8px; margin-top: 40px; text-align: center;">
+        <h2>Наша статистика</h2>
+        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+            <div>
+                <h3 style="color: #6a11cb;">{{ products|length }}</h3>
+                <p>Товаров</p>
+            </div>
+            <div>
+                <h3 style="color: #2575fc;">{{ categories|length }}</h3>
+                <p>Категорий</p>
+            </div>
+            <div>
+                <h3 style="color: #ff6b6b;">24/7</h3>
+                <p>Поддержка</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

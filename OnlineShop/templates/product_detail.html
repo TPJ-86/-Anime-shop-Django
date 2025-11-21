@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Anime Shop{% endblock %}
+
+{% block content %}
+    <div style="margin: 20px 0;">
+        <a href="/products/" class="btn">← Назад к товарам</a>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; background: white; padding: 20px; border-radius: 8px;">
+        <div style="text-align: center;">
+            <div class="product-image" style="width: 200px; height: 200px; font-size: 48px;">
+                {% if product.category.name == "Фигурки" %}🗿
+                {% elif product.category.name == "Одежда" %}👕
+                {% elif product.category.name == "Аксессуары" %}🎀
+                {% elif product.category.name == "Комиксы" %}📚
+                {% else %}🎁
+                {% endif %}
+            </div>
+        </div>
+        
+        <div>
+            <h1>{{ product.name }}</h1>
+            <div class="product-price" style="font-size: 24px;">{{ product.price }} ₽</div>
+            
+            <div style="margin: 20px 0;">
+                <p><strong>Категория:</strong> {{ product.category.name }}</p>
+                <p><strong>В наличии:</strong> {{ product.stock }} шт.</p>
+                {% if product.supplier %}
+                    <p><strong>Поставщик:</strong> {{ product.supplier.name }}</p>
+                {% endif %}
+            </div>
+            
+            <button style="background: #ff6b6b; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-size: 16px; cursor: pointer;">
+                🛒 Добавить в корзину
+            </button>
+        </div>
+    </div>
+{% endblock %}

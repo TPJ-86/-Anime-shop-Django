@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Anime Shop{% endblock %}
+
+{% block content %}
+    <div style="margin: 20px 0;">
+        <a href="/categories/" class="btn">← Назад к категориям</a>
+    </div>
+    
+    <h1>Категория: {{ category.name }}</h1>
+    <p>{{ category.description|default:"Описание категории" }}</p>
+    
+    <h2>Товары в этой категории:</h2>
+    <div class="products-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.category.name == "Фигурки" %}🗿
+                    {% elif product.category.name == "Одежда" %}👕
+                    {% elif product.category.name == "Аксессуары" %}🎀
+                    {% elif product.category.name == "Комиксы" %}📚
+                    {% else %}🎁
+                    {% endif %}
+                </div>
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-price">{{ product.price }} ₽</div>
+                <div>В наличии: {{ product.stock }} шт.</div>
+                <a href="/products/{{ product.id }}/" class="btn">Подробнее</a>
+            </div>
+        {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <h3>В этой категории пока нет товаров</h3>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

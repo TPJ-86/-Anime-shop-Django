@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Категории - Anime Shop{% endblock %}
+
+{% block content %}
+    <h1>📂 Категории товаров</h1>
+    
+    <div style="margin: 20px 0;">
+        <a href="/" class="btn">← На главную</a>
+    </div>
+    
+    <div class="categories">
+        {% for category in categories %}
+            <a href="/categories/{{ category.id }}/" class="category-card">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description|default:"Товары категории" }}</p>
+            </a>
+        {% empty %}
+            <p>Категории пока не добавлены</p>
+        {% endfor %}
+    </div>
+{% endblock %}
