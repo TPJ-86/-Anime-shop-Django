@@ -1,39 +1,732 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ product.name }} - Anime Shop{% endblock %}
+{% block title %}🌸 {{ product.name }} - Sakura Anime Shop{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== PRODUCT DETAIL PAGE ===== */
+    .product-detail-page {
+        padding: 20px 0;
+    }
+    
+    .back-button {
+        margin-bottom: 30px;
+    }
+    
+    .back-button a {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 25px;
+        background: white;
+        border: 2px solid var(--sakura-pink);
+        border-radius: 25px;
+        color: var(--text-dark);
+        text-decoration: none;
+        font-weight: 700;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+    }
+    
+    .back-button a:hover {
+        background: var(--sakura-pink);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* ===== PRODUCT CONTAINER ===== */
+    .product-detail-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 50px;
+    }
+    
+    @media (max-width: 1024px) {
+        .product-detail-container {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+    }
+    
+    /* ===== PRODUCT GALLERY ===== */
+    .product-gallery-detail {
+        background: white;
+        border-radius: 25px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        border: 3px solid white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .product-gallery-detail::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--sakura-pink), var(--anime-blue));
+    }
+    
+    .main-image-container {
+        width: 100%;
+        height: 400px;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, #f8f9ff, #fff5f9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .main-image-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        padding: 20px;
+    }
+    
+    .image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--sakura-pink);
+        font-size: 4rem;
+    }
+    
+    .image-placeholder i {
+        margin-bottom: 20px;
+    }
+    
+    .image-placeholder span {
+        font-size: 1rem;
+        color: var(--text-light);
+        margin-top: 10px;
+    }
+    
+    .thumbnails-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+    
+    .thumbnail {
+        height: 80px;
+        border-radius: 15px;
+        overflow: hidden;
+        cursor: pointer;
+        background: linear-gradient(45deg, #f8f9ff, #fff5f9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid transparent;
+        transition: var(--transition);
+    }
+    
+    .thumbnail:hover,
+    .thumbnail.active {
+        border-color: var(--sakura-pink);
+        transform: translateY(-3px);
+    }
+    
+    .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* ===== PRODUCT INFO ===== */
+    .product-info-detail {
+        background: white;
+        border-radius: 25px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        border: 3px solid white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .product-info-detail::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--anime-blue), var(--manga-red));
+    }
+    
+    .category-tag {
+        display: inline-block;
+        background: rgba(0, 180, 255, 0.1);
+        color: var(--anime-blue);
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        border: 2px solid rgba(0, 180, 255, 0.2);
+    }
+    
+    .product-title-detail {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+        color: var(--text-dark);
+        line-height: 1.2;
+        font-weight: 900;
+    }
+    
+    .product-rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    
+    .stars {
+        color: #ffd700;
+        font-size: 1.2rem;
+    }
+    
+    .rating-text {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+    
+    .product-price-detail {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--manga-red);
+        margin: 25px 0;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .product-price-detail::after {
+        content: '円';
+        font-size: 1.2rem;
+        color: var(--text-light);
+        margin-left: 10px;
+        opacity: 0.7;
+    }
+    
+    /* ===== STOCK STATUS ===== */
+    .stock-status-detail {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        background: white;
+        border: 2px solid rgba(46, 204, 113, 0.3);
+        box-shadow: var(--shadow);
+    }
+    
+    .stock-status-detail.in-stock {
+        border-color: rgba(46, 204, 113, 0.3);
+        background: rgba(46, 204, 113, 0.05);
+    }
+    
+    .stock-status-detail.low-stock {
+        border-color: rgba(243, 156, 18, 0.3);
+        background: rgba(243, 156, 18, 0.05);
+    }
+    
+    .stock-status-detail.out-stock {
+        border-color: rgba(231, 76, 60, 0.3);
+        background: rgba(231, 76, 60, 0.05);
+    }
+    
+    .stock-status-detail i {
+        font-size: 1.5rem;
+    }
+    
+    .stock-status-detail.in-stock i {
+        color: #2ecc71;
+    }
+    
+    .stock-status-detail.low-stock i {
+        color: #f39c12;
+    }
+    
+    .stock-status-detail.out-stock i {
+        color: #e74c3c;
+    }
+    
+    /* ===== DESCRIPTION ===== */
+    .description-box {
+        margin: 30px 0;
+        padding: 25px;
+        background: linear-gradient(135deg, rgba(255, 158, 187, 0.05), rgba(0, 180, 255, 0.05));
+        border-radius: 20px;
+        border-left: 4px solid var(--sakura-pink);
+    }
+    
+    .description-box h3 {
+        margin-bottom: 15px;
+        color: var(--text-dark);
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .description-box p {
+        color: var(--text-dark);
+        line-height: 1.8;
+        margin-bottom: 0;
+    }
+    
+    /* ===== SPECIFICATIONS ===== */
+    .specs-grid-detail {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin: 25px 0;
+    }
+    
+    @media (max-width: 576px) {
+        .specs-grid-detail {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .spec-item-detail {
+        padding: 15px;
+        background: white;
+        border-radius: 15px;
+        border: 2px solid var(--sakura-light);
+        transition: var(--transition);
+    }
+    
+    .spec-item-detail:hover {
+        border-color: var(--anime-blue);
+        transform: translateY(-3px);
+    }
+    
+    .spec-label-detail {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .spec-value-detail {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+    
+    /* ===== ACTION BUTTONS ===== */
+    .action-buttons-detail {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    @media (max-width: 576px) {
+        .action-buttons-detail {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    /* ===== ADDITIONAL INFO ===== */
+    .additional-info {
+        margin-top: 60px;
+        background: white;
+        border-radius: 25px;
+        padding: 40px;
+        box-shadow: var(--shadow);
+        border: 3px solid white;
+    }
+    
+    .additional-info::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--sakura-pink), var(--manga-red));
+    }
+    
+    .info-grid-detail {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+    
+    .info-item-detail {
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(255, 158, 187, 0.05), rgba(0, 180, 255, 0.05));
+        border-radius: 20px;
+        text-align: center;
+        transition: var(--transition);
+        border: 2px solid transparent;
+    }
+    
+    .info-item-detail:hover {
+        border-color: var(--sakura-pink);
+        transform: translateY(-5px);
+    }
+    
+    .info-icon-detail {
+        font-size: 2.5rem;
+        color: var(--manga-red);
+        margin-bottom: 15px;
+    }
+    
+    /* ===== RELATED PRODUCTS ===== */
+    .related-section {
+        margin-top: 60px;
+    }
+    
+    .related-products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+    
+    .related-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: 3px solid white;
+        transition: var(--transition);
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .related-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--sakura-pink);
+    }
+    
+    .related-icon {
+        font-size: 2.5rem;
+        color: var(--anime-blue);
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-    <div style="margin: 20px 0;">
-        <a href="/products/" class="btn">← Назад к товарам</a>
+<div class="product-detail-page">
+    <!-- Кнопка назад -->
+    <div class="back-button">
+        <a href="/products/">
+            <i class="fas fa-arrow-left"></i> Назад к товарам
+        </a>
     </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; background: white; padding: 20px; border-radius: 8px;">
-        <div style="text-align: center;">
-            <div class="product-image" style="width: 200px; height: 200px; font-size: 48px;">
-                {% if product.category.name == "Фигурки" %}🗿
-                {% elif product.category.name == "Одежда" %}👕
-                {% elif product.category.name == "Аксессуары" %}🎀
-                {% elif product.category.name == "Комиксы" %}📚
-                {% else %}🎁
+
+    <!-- Основной контейнер -->
+    <div class="product-detail-container">
+        <!-- Галерея -->
+        <div class="product-gallery-detail">
+            <div class="main-image-container">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" id="mainProductImage">
+                {% else %}
+                    <div class="image-placeholder">
+                        {% if product.category.name == "Фигурки" %}<i class="fas fa-robot"></i>
+                        {% elif product.category.name == "Одежда" %}<i class="fas fa-tshirt"></i>
+                        {% elif product.category.name == "Комиксы" %}<i class="fas fa-book"></i>
+                        {% else %}<i class="fas fa-gift"></i>{% endif %}
+                        <span>Изображение отсутствует</span>
+                    </div>
                 {% endif %}
+            </div>
+            
+            <div class="thumbnails-grid">
+                {% for i in "1234" %}
+                <div class="thumbnail {% if forloop.first %}active{% endif %}" 
+                     onclick="changeImage('{% if product.image %}{{ product.image.url }}{% endif %}')">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="Фото {{ i }}">
+                    {% else %}
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--sakura-pink);">
+                            {% if product.category.name == "Фигурки" %}<i class="fas fa-robot"></i>
+                            {% elif product.category.name == "Одежда" %}<i class="fas fa-tshirt"></i>
+                            {% elif product.category.name == "Комиксы" %}<i class="fas fa-book"></i>
+                            {% else %}<i class="fas fa-gift"></i>{% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
             </div>
         </div>
         
-        <div>
-            <h1>{{ product.name }}</h1>
-            <div class="product-price" style="font-size: 24px;">{{ product.price }} ₽</div>
+        <!-- Информация о товаре -->
+        <div class="product-info-detail">
+            <span class="category-tag">{{ product.category.name }}</span>
             
-            <div style="margin: 20px 0;">
-                <p><strong>Категория:</strong> {{ product.category.name }}</p>
-                <p><strong>В наличии:</strong> {{ product.stock }} шт.</p>
-                {% if product.supplier %}
-                    <p><strong>Поставщик:</strong> {{ product.supplier.name }}</p>
+            <h1 class="product-title-detail">{{ product.name }}</h1>
+            
+            <div class="product-rating">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="rating-text">4.8 (24 отзыва)</span>
+            </div>
+            
+            <div class="product-price-detail">{{ product.price }}</div>
+            
+            <!-- Наличие -->
+            <div class="stock-status-detail {% if product.stock > 10 %}in-stock{% elif product.stock > 0 %}low-stock{% else %}out-stock{% endif %}">
+                {% if product.stock > 10 %}
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <div style="font-weight: 700; color: #2ecc71; margin-bottom: 5px;">В наличии</div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">
+                            {{ product.stock }} шт. на складе
+                        </div>
+                    </div>
+                {% elif product.stock > 0 %}
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <div style="font-weight: 700; color: #f39c12; margin-bottom: 5px;">Заканчивается</div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">
+                            Осталось {{ product.stock }} шт.
+                        </div>
+                    </div>
+                {% else %}
+                    <i class="fas fa-times-circle"></i>
+                    <div>
+                        <div style="font-weight: 700; color: #e74c3c; margin-bottom: 5px;">Нет в наличии</div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">
+                            Ожидается поставка
+                        </div>
+                    </div>
                 {% endif %}
             </div>
             
-            <button style="background: #ff6b6b; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-size: 16px; cursor: pointer;">
-                🛒 Добавить в корзину
-            </button>
+            <!-- Описание -->
+            {% if product.description %}
+            <div class="description-box">
+                <h3><i class="fas fa-file-alt"></i> Описание товара</h3>
+                <p>{{ product.description|linebreaks }}</p>
+            </div>
+            {% endif %}
+            
+            <!-- Характеристики -->
+            <h3 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.3rem;">
+                <i class="fas fa-list"></i> Характеристики
+            </h3>
+            <div class="specs-grid-detail">
+                <div class="spec-item-detail">
+                    <div class="spec-label-detail"><i class="fas fa-tag"></i> Категория</div>
+                    <div class="spec-value-detail">{{ product.category.name }}</div>
+                </div>
+                
+                {% if product.supplier %}
+                <div class="spec-item-detail">
+                    <div class="spec-label-detail"><i class="fas fa-truck"></i> Поставщик</div>
+                    <div class="spec-value-detail">{{ product.supplier.name }}</div>
+                </div>
+                {% endif %}
+                
+                <div class="spec-item-detail">
+                    <div class="spec-label-detail"><i class="fas fa-barcode"></i> Артикул</div>
+                    <div class="spec-value-detail">#{{ product.id|stringformat:"06d" }}</div>
+                </div>
+                
+                <div class="spec-item-detail">
+                    <div class="spec-label-detail"><i class="fas fa-box"></i> Наличие</div>
+                    <div class="spec-value-detail" style="color: {% if product.stock > 10 %}#2ecc71{% elif product.stock > 0 %}#f39c12{% else %}#e74c3c{% endif %};">
+                        {% if product.stock > 10 %}В наличии{% elif product.stock > 0 %}Мало{% else %}Нет{% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Кнопки действий -->
+            <div class="action-buttons-detail">
+                {% if product.stock > 0 %}
+                <button class="anime-btn btn-primary" onclick="addToCart({{ product.id }})" style="background: linear-gradient(45deg, #f8f9ff, #fff5f9); width: 100%; padding: 16px; border: 2px solid rgba(252, 169, 255, 1);">
+                    <i class="fas fa-shopping-cart"></i> Добавить в корзину
+                </button>
+                {% else %}
+                <button class="anime-btn" disabled style="width: 100%; padding: 16px; background: var(--text-light);">
+                    <i class="fas fa-ban"></i> Нет в наличии
+                </button>
+                {% endif %}
+                
+                <a href="/categories/{{ product.category.id }}/" class="anime-btn btn-secondary" style="width: 100%; padding: 16px; text-align: center; text-decoration: none;">
+                    <i class="fas fa-tags"></i> Все в категории
+                </a>
+            </div>
         </div>
     </div>
+
+    <!-- Дополнительная информация -->
+    <div class="additional-info">
+        <h2 class="section-title" style="color: var(--manga-red); margin-bottom: 15px; font-size: 1.8rem;">
+            Информация о покупке
+        </h2>
+        <p style="color: var(--text-light); margin-bottom: 30px;">
+            Вся необходимая информация для совершения покупки
+        </p>
+        
+        <div class="info-grid-detail">
+            <div class="info-item-detail">
+                <div class="info-icon-detail">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h3 style="color: var(--text-dark); margin-bottom: 10px; font-size: 1.1rem;">
+                    Доставка
+                </h3>
+                <p style="color: var(--text-light); font-size: 0.9rem;">
+                    Доставка по России 5-10 дней, в Москве 1-2 дня. Бесплатная доставка от 3000₽
+                </p>
+            </div>
+            
+            <div class="info-item-detail">
+                <div class="info-icon-detail">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 style="color: var(--text-dark); margin-bottom: 10px; font-size: 1.1rem;">
+                    Гарантия
+                </h3>
+                <p style="color: var(--text-light); font-size: 0.9rem;">
+                    100% оригинальная продукция. Возврат в течение 14 дней. Гарантия 6 месяцев
+                </p>
+            </div>
+            
+            <div class="info-item-detail">
+                <div class="info-icon-detail">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3 style="color: var(--text-dark); margin-bottom: 10px; font-size: 1.1rem;">
+                    Оплата
+                </h3>
+                <p style="color: var(--text-light); font-size: 0.9rem;">
+                    Наличными курьеру, картой онлайн, СБП. Безопасные платежи через CloudPayments
+                </p>
+            </div>
+            
+            <div class="info-item-detail">
+                <div class="info-icon-detail">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3 style="color: var(--text-dark); margin-bottom: 10px; font-size: 1.1rem;">
+                    Поддержка
+                </h3>
+                <p style="color: var(--text-light); font-size: 0.9rem;">
+                    Поддержка 24/7. Помощь в выборе товара. Консультация по доставке и оплате
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function changeImage(src) {
+        const mainImage = document.getElementById('mainProductImage');
+        if (mainImage && src) {
+            mainImage.src = src;
+        }
+        
+        // Убираем активный класс у всех миниатюр
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        
+        // Добавляем активный класс текущей миниатюре
+        event.currentTarget.classList.add('active');
+    }
+    
+    function addToCart(productId) {
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        
+        // Анимация добавления
+        btn.innerHTML = '<i class="fas fa-check"></i> Добавлено!';
+        btn.style.background = '#2ecc71';
+        btn.disabled = true;
+        
+        // Эффект частиц
+        for (let i = 0; i < 5; i++) {
+            createParticle(btn);
+        }
+        
+        // Восстанавливаем кнопку
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = '';
+            btn.disabled = false;
+        }, 2000);
+        
+        console.log('Товар добавлен в корзину:', productId);
+    }
+    
+    function createParticle(btn) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.width = '8px';
+        particle.style.height = '8px';
+        particle.style.background = '#2ecc71';
+        particle.style.borderRadius = '50%';
+        particle.style.left = (btn.getBoundingClientRect().left + btn.offsetWidth / 2) + 'px';
+        particle.style.top = (btn.getBoundingClientRect().top + btn.offsetHeight / 2) + 'px';
+        particle.style.zIndex = '1000';
+        document.body.appendChild(particle);
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 50 + Math.random() * 50;
+        const duration = 500 + Math.random() * 500;
+        
+        particle.animate([
+            {
+                transform: `translate(0, 0)`,
+                opacity: 1
+            },
+            {
+                transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`,
+                opacity: 0
+            }
+        ], {
+            duration: duration,
+            easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+        });
+        
+        setTimeout(() => {
+            particle.remove();
+        }, duration);
+    }
+    
+    // Анимация появления элементов
+    document.addEventListener('DOMContentLoaded', function() {
+        const elements = document.querySelectorAll('.product-gallery-detail, .product-info-detail, .additional-info, .related-card');
+        
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
 {% endblock %}

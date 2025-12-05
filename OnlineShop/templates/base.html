@@ -3,19 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Anime Shop - Магазин аниме товаров{% endblock %}</title>
+    <title>{% block title %}🌸 Sakura Shop{% endblock %}</title>
     <style>
+        /* ===== BASE STYLES ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        :root {
+            --sakura-pink: #ff9ebb;
+            --sakura-light: #ffd6e7;
+            --anime-blue: #00b4ff;
+            --manga-red: #ff3b6d;
+            --background: #fff9fc;
+            --card-bg: #ffffff;
+            --text-dark: #333344;
+            --text-light: #666677;
+            --shadow: 0 8px 25px rgba(255, 158, 187, 0.15);
+            --transition: all 0.3s ease;
+        }
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            line-height: 1.6;
+            font-family: 'M PLUS Rounded 1c', 'Arial Rounded MT Bold', sans-serif;
+            background: var(--background);
+            color: var(--text-dark);
+            min-height: 100vh;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M30,30 Q50,10 70,30 T90,30" fill="none" stroke="%23ff9ebb" stroke-width="0.5" opacity="0.1"/></svg>'),
+                radial-gradient(circle at 10% 20%, rgba(255, 158, 187, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(0, 180, 255, 0.05) 0%, transparent 50%);
+            display: flex;
+            flex-direction: column;
         }
         
         .container {
@@ -24,206 +44,333 @@
             padding: 0 20px;
         }
         
-        /* Header */
+        /* ===== SAKURA DECORATIONS ===== */
+        .sakura-petal {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            background: var(--sakura-pink);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.6;
+            z-index: -1;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* ===== HEADER ===== */
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid var(--sakura-pink);
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: var(--shadow);
         }
         
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
+            padding: 1.2rem 0;
+            position: relative;
         }
         
         .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #764ba2;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--manga-red);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            padding: 10px 20px;
+        }
+        
+        .logo::before {
+            content: '🌸';
+            font-size: 1.8rem;
+            animation: spin 20s linear infinite;
+        }
+        
+        .logo::after {
+            content: '🎌';
+            font-size: 1.8rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .nav-links {
             display: flex;
+            gap: 25px;
             list-style: none;
-            gap: 2rem;
         }
         
-        .nav-links a {
+        .nav-link {
+            color: var(--text-dark);
             text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 12px 24px;
+            border-radius: 50px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to right, transparent 50%, var(--sakura-light) 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
         }
         
-        .nav-links a:hover {
-            color: #764ba2;
-        }
-        
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)), 
-                        url('https://via.placeholder.com/1200x600') center/cover;
-            color: white;
-            text-align: center;
-            padding: 100px 0;
-            margin-bottom: 50px;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: #ff6b6b;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .btn:hover {
+        .nav-link:hover {
+            background-position: left bottom;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 158, 187, 0.3);
         }
         
-        /* Products Grid */
-        .section-title {
-            text-align: center;
-            margin: 3rem 0;
-            color: white;
-            font-size: 2.5rem;
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--manga-red);
+            transition: width 0.3s ease;
         }
         
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+        .nav-link:hover::after {
+            width: 70%;
         }
         
-        .product-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex: 1;
+            padding: 2.5rem 0;
+            position: relative;
         }
         
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-        
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-        }
-        
-        .product-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-        
-        .product-price {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #764ba2;
-            margin-bottom: 0.5rem;
-        }
-        
-        .product-stock {
-            color: #666;
-            margin-bottom: 1rem;
-        }
-        
-        /* Categories */
-        .categories {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
-        
-        .category-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            text-decoration: none;
-            color: #333;
-            transition: transform 0.3s;
-            min-width: 200px;
-        }
-        
-        .category-card:hover {
-            transform: scale(1.05);
-        }
-        
-        /* Footer */
+        /* ===== FOOTER ===== */
         footer {
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
+            background: linear-gradient(to bottom, var(--sakura-light), #fff0f7);
+            padding: 4rem 0 2rem;
+            margin-top: auto;
+            border-top: 3px solid var(--sakura-pink);
+            position: relative;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h3 {
+            color: var(--manga-red);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--anime-blue);
+            border-radius: 2px;
+        }
+        
+        .footer-section p {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
+        .footer-bottom {
             text-align: center;
-            padding: 2rem 0;
-            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 158, 187, 0.3);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* ===== CHARACTER DECORATION ===== */
+        .chibi-character {
+            position: absolute;
+            right: 50px;
+            bottom: 50px;
+            width: 150px;
+            height: 150px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="30" r="20" fill="%23ff9ebb"/><circle cx="50" cy="80" r="35" fill="%23ff9ebb"/><circle cx="35" cy="25" r="3" fill="white"/><circle cx="65" cy="25" r="3" fill="white"/><path d="M40,35 Q50,45 60,35" stroke="white" stroke-width="2" fill="none"/></svg>') no-repeat center;
+            opacity: 0.1;
+            z-index: -1;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .nav-link {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+                padding: 1rem 0;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
         }
     </style>
+    <!-- Японские шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&family=Kiwi+Maru:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Header -->
+    <!-- Сакура -->
+    <div id="sakura-container"></div>
+    
+    <!-- Чиби-персонаж -->
+    <div class="chibi-character"></div>
+
+    <!-- HEADER -->
     <header>
         <div class="container">
             <nav class="navbar">
-                <a href="/" class="logo">🎌 Anime Shop</a>
+                <a href="/" class="logo">
+                    <span>Sakura Shop</span>
+                </a>
                 <ul class="nav-links">
-                    <li><a href="/">Главная</a></li>
-                    <li><a href="/products/">Товары</a></li>
-                    <li><a href="/categories/">Категории</a></li>
-                    <li><a href="/admin/">Админка</a></li>
+                    <li><a href="/" class="nav-link">🏠 Главная</a></li>
+                    <li><a href="/products/" class="nav-link">📦 Товары</a></li>
+                    <li><a href="/categories/" class="nav-link">📚 Категории</a></li>
+                    <li><a href="/admin/" class="nav-link">⚙️ Админка</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- MAIN CONTENT -->
     <main>
-        {% block content %}
-        {% endblock %}
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer>
         <div class="container">
-            <p>&copy; 2024 Anime Shop. Все права защищены.</p>
-            <p>Магазин лучших аниме товаров</p>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🌸 Sakura Shop</h3>
+                    <p>Магазин аутентичных аниме товаров из Японии. Коллекционные фигурки, манга, косплей костюмы и многое другое для настоящих отаку.</p>
+                    <div style="margin-top: 20px; display: flex; gap: 15px;">
+                        <div style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow);">
+                            <i class="fab fa-twitter" style="color: var(--anime-blue);"></i>
+                        </div>
+                        <div style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow);">
+                            <i class="fab fa-instagram" style="color: var(--manga-red);"></i>
+                        </div>
+                        <div style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow);">
+                            <i class="fab fa-youtube" style="color: #ff0000;"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>📞 Контакты</h3>
+                    <p><i class="fas fa-envelope" style="color: var(--anime-blue); margin-right: 10px;"></i> info@sakura-shop.ru</p>
+                    <p><i class="fas fa-phone" style="color: var(--manga-red); margin-right: 10px;"></i> +7 (999) 123-45-67</p>
+                    <p><i class="fas fa-clock" style="color: var(--sakura-pink); margin-right: 10px;"></i> 10:00 - 22:00 ежедневно</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>🚚 Доставка</h3>
+                    <p>Быстрая доставка из Японии. EMS и DHL экспресс. Доставка по России 5-10 дней. Гарантия и возврат в течение 30 дней.</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 Sakura Anime Shop. Все права защищены. Сделано с 💖 для сообщества аниме-фанатов</p>
+                <p style="margin-top: 10px; opacity: 0.7;">
+                    ありがとうございます！ (Спасибо!)
+                </p>
+            </div>
         </div>
     </footer>
+
+    <script>
+        // Создаем лепестки сакуры
+        document.addEventListener('DOMContentLoaded', function() {
+            const sakuraContainer = document.getElementById('sakura-container');
+            for (let i = 0; i < 15; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'sakura-petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                petal.style.animationDelay = Math.random() * 5 + 's';
+                petal.style.width = (Math.random() * 10 + 10) + 'px';
+                petal.style.height = petal.style.width;
+                sakuraContainer.appendChild(petal);
+            }
+            
+            // Анимация навигации
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                });
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

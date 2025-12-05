@@ -1,72 +1,774 @@
 {% extends 'base.html' %}
 
-{% block title %}Главная - Anime Shop{% endblock %}
+{% block title %}🌸 Sakura Shop - Главная{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== HERO SECTION ===== */
+    .hero-anime {
+        position: relative;
+        padding: 80px 0;
+        margin-bottom: 60px;
+        background: linear-gradient(135deg, rgba(255, 158, 187, 0.1), rgba(0, 180, 255, 0.1));
+        border-radius: 30px;
+        overflow: hidden;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: 3px solid white;
+    }
+    
+    .hero-anime::before {
+        content: 'かわいい！';
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 2.5rem;
+        color: var(--manga-red);
+        transform: rotate(15deg);
+        opacity: 0.2;
+        font-weight: 900;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--manga-red);
+        position: relative;
+        display: inline-block;
+    }
+    
+    .hero-title::before {
+        content: '「';
+        position: absolute;
+        left: -40px;
+        top: 0;
+        font-size: 4rem;
+        color: var(--sakura-pink);
+    }
+    
+    .hero-title::after {
+        content: '」';
+        position: absolute;
+        right: -40px;
+        top: 0;
+        font-size: 4rem;
+        color: var(--sakura-pink);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-light);
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.8;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .anime-btn {
+        padding: 16px 35px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    
+    .anime-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.5s;
+    }
+    
+    .anime-btn:hover::before {
+        left: 100%;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, var(--manga-red), var(--sakura-pink));
+        color: white;
+        box-shadow: 0 8px 20px rgba(255, 59, 109, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(255, 59, 109, 0.4);
+    }
+    
+    .btn-secondary {
+        background: white;
+        color: var(--anime-blue);
+        border: 2px solid var(--anime-blue);
+        box-shadow: 0 8px 20px rgba(0, 180, 255, 0.2);
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 180, 255, 0.3);
+    }
+    
+    /* ===== PRODUCTS SECTION ===== */
+    .products-section {
+        margin: 80px 0;
+        position: relative;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        color: var(--manga-red);
+        position: relative;
+        padding-left: 20px;
+    }
+    
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 70%;
+        background: var(--sakura-pink);
+        border-radius: 3px;
+    }
+    
+    .speech-bubble {
+        background: white;
+        padding: 15px 25px;
+        border-radius: 20px;
+        position: relative;
+        border: 2px solid var(--anime-blue);
+        font-weight: 700;
+        color: var(--text-dark);
+        box-shadow: var(--shadow);
+    }
+    
+    .speech-bubble::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 30px;
+        border-width: 15px 15px 0;
+        border-style: solid;
+        border-color: var(--anime-blue) transparent transparent;
+    }
+    
+    .speech-bubble::before {
+        content: '';
+        position: absolute;
+        bottom: -11px;
+        left: 30px;
+        border-width: 15px 15px 0;
+        border-style: solid;
+        border-color: white transparent transparent;
+    }
+    
+    /* ===== MANGA-STYLE PRODUCT CARDS ===== */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        position: relative;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        position: relative;
+        border: 3px solid white;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px) rotate(1deg);
+        box-shadow: 0 20px 40px rgba(255, 158, 187, 0.3);
+    }
+    
+    .product-card::before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        right: -3px;
+        bottom: -3px;
+        background: linear-gradient(45deg, var(--sakura-pink), var(--anime-blue), var(--manga-red));
+        z-index: -1;
+        border-radius: 22px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .product-card:hover::before {
+        opacity: 1;
+    }
+    
+    .product-image-container {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(45deg, #f8f9ff, #fff5f9);
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.1);
+    }
+    
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--manga-red);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        z-index: 2;
+        box-shadow: 0 4px 10px rgba(255, 59, 109, 0.3);
+    }
+    
+    .product-content {
+        padding: 20px;
+        position: relative;
+    }
+    
+    .product-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 20px;
+        right: 20px;
+        height: 2px;
+        background: linear-gradient(to right, transparent, var(--sakura-pink), transparent);
+    }
+    
+    .product-category {
+        display: inline-block;
+        background: rgba(0, 180, 255, 0.1);
+        color: var(--anime-blue);
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .product-name {
+        font-size: 1.2rem;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        line-height: 1.4;
+        font-weight: 700;
+    }
+    
+    .product-price {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: var(--manga-red);
+        margin: 15px 0;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .product-price::after {
+        content: '円';
+        font-size: 1rem;
+        color: var(--text-light);
+        margin-left: 5px;
+        opacity: 0.7;
+    }
+    
+    .product-stock {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px 0;
+        font-size: 0.9rem;
+    }
+    
+    .stock-available {
+        color: #2ecc71;
+    }
+    
+    .stock-low {
+        color: #f39c12;
+    }
+    
+    .stock-out {
+        color: #e74c3c;
+        opacity: 0.7;
+    }
+    
+    .product-actions {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+    }
+    
+    .view-btn {
+        background: var(--anime-blue);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 15px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 700;
+        transition: var(--transition);
+    }
+    
+    .view-btn:hover {
+        background: #0099e6;
+        transform: scale(1.05);
+    }
+    
+    .cart-btn {
+        width: 50px;
+        background: var(--sakura-pink);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .cart-btn:hover {
+        background: #ff8ca8;
+        transform: scale(1.1);
+    }
+    
+    /* ===== CATEGORIES SECTION ===== */
+    .categories-section {
+        margin: 80px 0;
+    }
+    
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+    }
+    
+    .category-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 20px;
+        text-align: center;
+        text-decoration: none;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        border: 2px solid white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .category-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--sakura-pink), var(--anime-blue));
+    }
+    
+    .category-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(255, 158, 187, 0.3);
+    }
+    
+    .category-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--manga-red);
+        transition: var(--transition);
+    }
+    
+    .category-card:hover .category-icon {
+        transform: scale(1.2) rotate(5deg);
+    }
+    
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 60px 30px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .empty-state::before {
+        content: 'カラ';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 8rem;
+        font-weight: 900;
+        color: rgba(255, 158, 187, 0.1);
+        z-index: 0;
+    }
+    
+    .empty-icon {
+        font-size: 4rem;
+        color: var(--sakura-pink);
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* ===== STATS SECTION ===== */
+    .stats-section {
+        margin: 80px 0;
+        padding: 50px;
+        background: linear-gradient(135deg, rgba(255, 158, 187, 0.1), rgba(0, 180, 255, 0.1));
+        border-radius: 30px;
+        border: 3px solid white;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .stat-item {
+        padding: 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--manga-red);
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    /* ===== FINAL CTA ===== */
+    .final-cta {
+        text-align: center;
+        padding: 80px 30px;
+        margin: 80px 0;
+        background: white;
+        border-radius: 30px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        border: 3px solid white;
+    }
+    
+    .final-cta::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 30%, rgba(255, 158, 187, 0.1) 50%, transparent 70%);
+        animation: shine 3s infinite linear;
+    }
+    
+    @keyframes shine {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-    <!-- Герой секция -->
-    <section class="hero">
-        <h1>Добро пожаловать в Anime Shop!</h1>
-        <p>Лучшие товары для настоящих отаку</p>
-        <a href="/products/" class="hero-btn">Смотреть все товары</a>
+    <!-- HERO SECTION -->
+    <section class="hero-anime">
+        <h1 class="hero-title">Добро пожаловать в мир аниме!</h1>
+        <p class="hero-subtitle">
+            Коллекционные товары из ваших любимых сериалов и фильмов. 
+            Официальная продукция из Японии с доставкой по всей России.
+        </p>
+        <div class="hero-buttons">
+            <button class="anime-btn btn-primary" onclick="window.location.href='/products/'">
+                <i class="fas fa-shopping-bag"></i> Смотреть товары
+            </button>
+            <button class="anime-btn btn-secondary" onclick="window.location.href='/categories/'">
+                <i class="fas fa-list"></i> Все категории
+            </button>
+        </div>
     </section>
 
-    <!-- Категории -->
-    <h2>Категории товаров</h2>
-    <div class="categories">
-        {% for category in categories %}
-            <a href="/categories/{{ category.id }}/" class="category-card">
-                <h3>{{ category.name }}</h3>
-                <p>{{ category.description|default:"Товары категории" }}</p>
-            </a>
-        {% empty %}
-            <p>Категории пока не добавлены</p>
-        {% endfor %}
-    </div>
-
-    <!-- Популярные товары -->
-    <h2>Популярные товары</h2>
-    <div class="products-grid">
-        {% for product in products %}
-            <div class="product-card">
-                <div class="product-image">
-                    {% if product.category.name == "Фигурки" %}🗿
-                    {% elif product.category.name == "Одежда" %}👕
-                    {% elif product.category.name == "Аксессуары" %}🎀
-                    {% elif product.category.name == "Комиксы" %}📚
-                    {% else %}🎁
-                    {% endif %}
-                </div>
-                <div class="product-name">{{ product.name }}</div>
-                <div class="product-price">{{ product.price }} ₽</div>
-                <div>В наличии: {{ product.stock }} шт.</div>
-                <div>Категория: {{ product.category.name }}</div>
-                <a href="/products/{{ product.id }}/" class="btn">Подробнее</a>
-            </div>
-        {% empty %}
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                <h3>Товаров пока нет</h3>
-                <p>Добавьте товары через админ-панель</p>
-                <a href="/admin/" class="btn">Перейти в админку</a>
-            </div>
-        {% endfor %}
-    </div>
-
-    <!-- Статистика -->
-    <div style="background: white; padding: 30px; border-radius: 8px; margin-top: 40px; text-align: center;">
-        <h2>Наша статистика</h2>
-        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-            <div>
-                <h3 style="color: #6a11cb;">{{ products|length }}</h3>
-                <p>Товаров</p>
-            </div>
-            <div>
-                <h3 style="color: #2575fc;">{{ categories|length }}</h3>
-                <p>Категорий</p>
-            </div>
-            <div>
-                <h3 style="color: #ff6b6b;">24/7</h3>
-                <p>Поддержка</p>
+    <!-- PRODUCTS SECTION -->
+    <section class="products-section">
+        <div class="section-header">
+            <h2 class="section-title">Популярные товары</h2>
+            <div class="speech-bubble">
+                Новые поступления!
             </div>
         </div>
+        
+        {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                {% if forloop.first %}
+                <div class="product-badge">Новинка</div>
+                {% endif %}
+                
+                <div class="product-image-container">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                    {% else %}
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--sakura-pink); font-size: 3rem;">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="product-content">
+                    <span class="product-category">{{ product.category.name }}</span>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    
+                    <div class="product-price">{{ product.price }}</div>
+                    
+                    <div class="product-stock {% if product.stock > 10 %}stock-available{% elif product.stock > 0 %}stock-low{% else %}stock-out{% endif %}">
+                        <i class="fas fa-{% if product.stock > 10 %}check-circle{% elif product.stock > 0 %}exclamation-circle{% else %}times-circle{% endif %}"></i>
+                        {% if product.stock > 10 %}
+                            В наличии
+                        {% elif product.stock > 0 %}
+                            Заканчивается
+                        {% else %}
+                            Нет в наличии
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="/products/{{ product.id }}/" class="view-btn">
+                            <i class="fas fa-eye"></i> Подробнее
+                        </a>
+                        {% if product.stock > 0 %}
+                        <button class="cart-btn" onclick="addToCart({{ product.id }})">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3 style="color: var(--text-dark); margin-bottom: 15px; position: relative; z-index: 1;">Товаров пока нет</h3>
+            <p style="color: var(--text-light); margin-bottom: 25px; position: relative; z-index: 1;">
+                Но скоро здесь появятся удивительные аниме-товары!
+            </p>
+            <a href="/admin/" class="anime-btn btn-primary" style="position: relative; z-index: 1;">
+                <i class="fas fa-plus"></i> Добавить товары
+            </a>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- CATEGORIES SECTION -->
+    <section class="categories-section">
+        <h2 class="section-title">Категории товаров</h2>
+        <p style="color: var(--text-light); margin-bottom: 40px; max-width: 600px;">
+            Выберите интересующую категорию и откройте для себя удивительный мир аниме-товаров
+        </p>
+        
+        <div class="categories-grid">
+            {% for category in categories|slice:":6" %}
+            <a href="/categories/{{ category.id }}/" class="category-card">
+                <div class="category-icon">
+                    {% if category.name == "Фигурки" %}<i class="fas fa-robot"></i>
+                    {% elif category.name == "Одежда" %}<i class="fas fa-tshirt"></i>
+                    {% elif category.name == "Комиксы" %}<i class="fas fa-book"></i>
+                    {% else %}<i class="fas fa-star"></i>{% endif %}
+                </div>
+                <h3 style="color: var(--text-dark); margin-bottom: 10px;">{{ category.name }}</h3>
+                <p style="color: var(--text-light); font-size: 0.9rem;">
+                    {{ category.description|default:"Товары категории"|truncatechars:60 }}
+                </p>
+            </a>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: var(--shadow);">
+                <i class="fas fa-exclamation-triangle" style="color: var(--sakura-pink); font-size: 2rem; margin-bottom: 15px;"></i>
+                <p style="color: var(--text-light);">Категории пока не добавлены</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+        <h2 class="section-title">Наша статистика</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">{{ products|length|default:"0" }}</div>
+                <div class="stat-label">Товаров</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">{{ categories|length|default:"0" }}</div>
+                <div class="stat-label">Категорий</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Оригинальная продукция</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Поддержка</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <div class="final-cta">
+        <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: var(--manga-red);">
+            Готовы начать коллекционирование?
+        </h2>
+        <p style="color: var(--text-light); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Присоединяйтесь к тысячам довольных покупателей и начните свою коллекцию аниме-товаров уже сегодня!
+        </p>
+        
+        <div style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;">
+            <button class="anime-btn btn-primary" onclick="window.location.href='/products/'" style="padding: 20px 50px;">
+                <i class="fas fa-shopping-cart"></i> Начать покупки
+            </button>
+            <button class="anime-btn btn-secondary" onclick="window.location.href='/categories/'" style="padding: 20px 50px;">
+                <i class="fas fa-compass"></i> Исследовать категории
+            </button>
+        </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function addToCart(productId) {
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        
+        // Анимация добавления в корзину
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        btn.style.background = '#2ecc71';
+        btn.disabled = true;
+        
+        // Создаем эффект частиц
+        for (let i = 0; i < 5; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '8px';
+            particle.style.height = '8px';
+            particle.style.background = '#2ecc71';
+            particle.style.borderRadius = '50%';
+            particle.style.left = (btn.getBoundingClientRect().left + 25) + 'px';
+            particle.style.top = (btn.getBoundingClientRect().top + 25) + 'px';
+            particle.style.zIndex = '1000';
+            document.body.appendChild(particle);
+            
+            // Анимация частицы
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 50 + Math.random() * 50;
+            const duration = 500 + Math.random() * 500;
+            
+            particle.animate([
+                {
+                    transform: `translate(0, 0)`,
+                    opacity: 1
+                },
+                {
+                    transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`,
+                    opacity: 0
+                }
+            ], {
+                duration: duration,
+                easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+            });
+            
+            // Удаляем частицу после анимации
+            setTimeout(() => {
+                particle.remove();
+            }, duration);
+        }
+        
+        // Восстанавливаем кнопку
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = '';
+            btn.disabled = false;
+        }, 2000);
+        
+        console.log('Товар добавлен в корзину:', productId);
+    }
+    
+    // Анимация карточек при прокрутке
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.product-card, .category-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    });
+</script>
 {% endblock %}
